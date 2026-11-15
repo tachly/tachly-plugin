@@ -1,0 +1,4 @@
+138b5847daaedaeef0d324e360be8241acdca0c54749f945465fd1238d2dbc2c  native/darwin-universal/tachly
+4b22540155659ec3a231fe8dd081c36d86645761c9b4dcb55a14760d596ac05a  native/linux-arm64/tachly
+95e3a18bd2e05fc741e6eab17b3e17796405987dac95d99ef334656ef5d9ede5  native/linux-x64/tachly
+c316c0782d222e23066c8aebfdd72c11059bad30ac0ebf38382df59d0ac1436d  native/win32-x64/tachly.exe

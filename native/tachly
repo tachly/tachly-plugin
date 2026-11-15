@@ -1,0 +1,44 @@
+#!/bin/sh
+# Tachly launcher: runs the native binary that matches this machine.
+# hook, send and statusline stay silent and exit 0 when there is no binary
+# it can run (missing, not executable, or on a noexec mount).
+
+dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+os=$(uname -s)
+arch=$(uname -m)
+target=
+
+case "$os" in
+  Darwin)
+    target="darwin-universal/tachly"
+    ;;
+  Linux)
+    case "$arch" in
+      x86_64 | amd64) target="linux-x64/tachly" ;;
+      aarch64 | arm64) target="linux-arm64/tachly" ;;
+    esac
+    ;;
+  MINGW* | MSYS* | CYGWIN*)
+    case "${PROCESSOR_ARCHITEW6432:-${PROCESSOR_ARCHITECTURE:-}}" in
+      AMD64 | ARM64) target="win32-x64/tachly.exe" ;;
+    esac
+    ;;
+esac
+
+# -x as well as -f: exec of a file without the exec bit, or on a noexec mount,
+# would print "Permission denied" and exit 126 on every hook.
+if [ -n "$target" ] && [ -f "$dir/$target" ] && [ -x "$dir/$target" ]; then
+  exec "$dir/$target" "$@"
+fi
+
+case "${1:-}" in
+  hook | send | statusline) exit 0 ;;
+esac
+
+if [ -n "$target" ] && [ -f "$dir/$target" ]; then
+  printf 'Tachly: %s cannot be run (no exec permission, or a noexec mount).\n' "$dir/$target" >&2
+  exit 1
+fi
+
+printf 'Tachly: this plugin has no binary for %s/%s.\n' "$os" "$arch" >&2
+exit 1
