@@ -1,5 +1,6 @@
 ---
-description: Connect this machine to a Tachly server (sign in through the browser)
+description: Connect this machine to Tachly (sign in through the browser). Without an address it uses https://tachly.dev; for your own server, pass its address
+argument-hint: "[server]"
 allowed-tools: Bash("${CLAUDE_PLUGIN_ROOT}/native/tachly" login:*)
 ---
 
