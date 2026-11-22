@@ -28,8 +28,9 @@ In Claude Code:
 /tachly:login
 ```
 
-Without an address it connects to the hosted Tachly at https://tachly.dev. If
-you run your own server, pass its address: `/tachly:login <server>`.
+Without an address it always connects to the hosted Tachly at
+https://tachly.dev, whatever server you signed in to before. If you run your
+own server, pass its address every time you sign in: `/tachly:login <server>`.
 
 The plugin prints a sign-in link (and a code), opens it in your browser and
 waits until you confirm. The token it gets is stored on this machine; you do
@@ -49,7 +50,7 @@ What to expect next:
 
 | Command | What it does |
 |---|---|
-| `/tachly:login [server]` | Signs this machine in to a Tachly server through the browser. Without an address it uses the server still saved in the config (for example after the server rejected the token), and if there is none (a new install, or after `/tachly:logout`) the hosted https://tachly.dev. A self-hosted server is always given by its address. |
+| `/tachly:login [server]` | Signs this machine in to a Tachly server through the browser. Without an address it always uses the hosted https://tachly.dev, even when another server is saved in the config. For a self-hosted server, pass its address every time you sign in. |
 | `/tachly:status` | Shows the server, person, whether prompt text is collected, last send, whether limits are collected (and when they were last read from the terminal `claude`), telemetry and Coach state, the queue (with dead files and data waiting for other servers) and the plugin version. |
 | `/tachly:sync [--days N \| --all]` | Imports older session history (default: the last 30 days). Sessions already on the server are skipped, so running it again is safe. |
 | `/tachly:statusline on\|off` | `on` wraps your status line to collect the 5-hour and 7-day limits (your original status line keeps working); `off` restores it as it was. |
@@ -225,8 +226,9 @@ How it handles your data:
 ## Troubleshooting
 
 **Nothing shows up on the server.** Run `/tachly:status`. If it says
-`Not connected`, run `/tachly:login` (or `/tachly:login <server>` for your own
-server). Hooks do nothing while you are signed out, so afterwards run
+`Not connected`, run `/tachly:login` for https://tachly.dev, or
+`/tachly:login <server>` for your own server (a bare `/tachly:login` always
+goes to https://tachly.dev). Hooks do nothing while you are signed out, so afterwards run
 `/tachly:sync` to import the sessions you missed.
 
 **The server was unreachable.** Nothing is lost: the data stays in the queue
@@ -236,7 +238,9 @@ Queue files older than 14 days are dropped. Details are in
 
 **"The server rejected this device's token".** The server no longer accepts
 this device (for example, it was revoked). The data stays in the queue; run
-`/tachly:login <server>` again and it is sent automatically.
+`/tachly:login <server>` again with the server's address (the message names
+it) and it is sent automatically. A bare `/tachly:login` signs in to
+https://tachly.dev, not to the server that rejected the token.
 
 **macOS refuses to run the binary.** Check the plugin files with `xattr -l`
 for `com.apple.quarantine`. A plugin installed with `/plugin` in the terminal
